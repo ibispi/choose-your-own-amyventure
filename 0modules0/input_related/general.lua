@@ -56,11 +56,6 @@ function general (dt)
 	end
 
 
-
-
-
-
-
 --------get the x and y coordinates of the cursor-------------------------------
 	clickedX, clickedY = love.mouse.getPosition()
 
@@ -112,6 +107,35 @@ end
 
 				if love.mouse.isDown(1)==true and leftmousePressed == false then
 					leftmousePressed = true
+					local canContinue = false
+
+				if Slide[currentSlide].hotspot[aHotspot].onlyActivatesOnImgClick ~= 0 then
+
+					local imgNumber = Slide[currentSlide].hotspot[aHotspot].onlyActivatesOnImgClick
+					local frameNumber = img[imgNumber].currentFrame
+					local imgWidth = img[imgNumber].frames[frameNumber]:getWidth()
+					local imgHeight = img[imgNumber].frames[frameNumber]:getHeight()
+
+					if clickedX >= Slide[currentSlide].img[imgNumber].x and
+					clickedX < Slide[currentSlide].img[imgNumber].x+imgWidth and
+					clickedY >= Slide[currentSlide].img[imgNumber].y and
+					clickedY < Slide[currentSlide].img[imgNumber].y+imgHeight then
+						local locationX = clickedX-Slide[currentSlide].img[imgNumber].x
+						local locationY = clickedY-Slide[currentSlide].img[imgNumber].y
+						print("x "..locationX)
+						print("y "..locationY)
+						local imgData = love.image.newImageData("sprites/"..Slide[currentSlide].img[imgNumber].folder.."/"..frameNumber..".png")
+					local	r,g,b,a = imgData:getPixel( locationX, locationY)
+						if a == 255 then
+							canContinue = true
+						end
+
+					end
+				else
+					canContinue = true
+				end
+
+					if canContinue == true then
 
 				clickedHotspot = aHotspot
 				local noHotspot = true
@@ -141,6 +165,7 @@ end
 					clickedHotspot = 0
 				end
 				break
+				end
 
 			else--if not pressed but above a hotspot
 
@@ -173,7 +198,6 @@ end
 					end
 					love.mouse.setCursor(cursorAnimation.highlight.frames[cursorAnimation.currentFrame])
 				end
-
 			end
 
 
@@ -207,8 +231,7 @@ end
 				end
 				love.mouse.setCursor(cursorAnimation.normal.frames[cursorAnimation.currentFrame])
 			end
-
-		end
+end
 
 		--detect hotspots here...
 	end
