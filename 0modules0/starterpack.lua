@@ -26,9 +26,9 @@ function starterpack ()
 
 		local folders = love.filesystem.getDirectoryItems("sprites")
 
-		local highestNumber = 0
-
 		for t = 1, #folders do
+			
+			local highestNumber = 0
 
 			for someImg = 1, #Slide[currentSlide].img, 1 do
 
