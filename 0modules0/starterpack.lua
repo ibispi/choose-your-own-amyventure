@@ -7,6 +7,8 @@ function starterpack ()
 	text = {}
 	source = nil
 
+	fadeOutTransparency = 0
+
 	love.graphics.setFont(textFont)
 
 	currentSlide = 1
@@ -14,9 +16,161 @@ function starterpack ()
 	--have to explode
 	clickedHotspot = 0
 
+	fadeOutTimerStarted = false
+	fadeOutTimerCount = 0
+
 	love.window.setTitle(windowTitle)
+
+
+	--loads cursor sprites
+	local folders = love.filesystem.getDirectoryItems("cursor")
+	cursorAnimation = { normal = {}, highlight = {}, click ={}, currentFrame=1,
+	nowAnimating="normal", delayTimerCount = 0, delayTimerStarted = false}
+	cursorAnimation.normal = { frames = {}, frameDelay ={},}
+	cursorAnimation.highlight = { frames = {}, frameDelay ={},}
+	cursorAnimation.click = { frames = {}, frameDelay ={},}
+
+	local cursorTypes = {"normal", "highlight", "click"}
+	for i = 1, #folders, 1 do
+
+		for cursorType = 1, #cursorTypes, 1 do
+
+			if folders[i] == cursorTypes[cursorType] then
+
+				local files = love.filesystem.getDirectoryItems("cursor/"..folders[i])
+
+				local highestNumber = 0
+
+				for q = 1, #files, 1 do
+
+					if files[q] ~= nil then
+
+						local thisNumber = files[q]:gsub(".png", "")
+
+						if thisNumber ~= "" then
+
+							thisNumber = tonumber(thisNumber)
+
+							if thisNumber > highestNumber then
+								highestNumber = thisNumber
+							end
+						end
+					end
+				end
+
+				if highestNumber ~= 0 then
+
+					for aCursor = 1, highestNumber, 1 do
+						cursorAnimation[cursorTypes[cursorType]].frames[aCursor] =
+						love.mouse.newCursor("cursor/"..folders[i].."/"..aCursor..".png",
+						cursorHotspots[cursorTypes[cursorType]].x,
+						cursorHotspots[cursorTypes[cursorType]].y )
+					end
+				end
+
+			end
+		end
+
+	end
+
+
+
+	function loadSlides()
+		local files = love.filesystem.getDirectoryItems("slides")
+
+		local highestNumber = 0
+
+		for i = 1, #files, 1 do
+
+
+			if files[i] ~= "0template0.lua" then
+
+				if files[i] ~= nil then
+
+					thisNumber = files[i]:gsub(".lua", "")
+
+					if thisNumber ~= "" then
+
+						thisNumber = tonumber(thisNumber)
+
+						if thisNumber > highestNumber then
+							highestNumber = thisNumber
+						end
+					end
+				end
+			end
+		end
+
+		if highestNumber ~= 0 then
+
+			for aSlide = 1, highestNumber, 1 do
+				Slide[aSlide] = require("slides/"..aSlide)
+			end
+		end
+
+		newSlide(1)
+	end
+
+	cutsceneTimerCount = -1
+
+	fadeOutColor = {0,0,0}
+	theFadeOutColor = startingFadeInColor
+	gameStarted = true
+	fadeOutRate=1
+	theNextChosenSlide = 0
+
+	fadeInTimerStarted=false
+	fadeInTimerCount = 0
+	fadeInTimerRing = startingFadeInTime
+
 	function newSlide (numero)
 
+		local theTimer = 0
+		if gameStarted == false and clickedHotspot~=0 then
+			theTimer = Slide[currentSlide].hotspot[clickedHotspot].fadeOutTimer
+		end
+
+		if cutsceneTimerCount ~= 0 then
+			theTimer = 1
+		end
+
+
+		if gameStarted ~= true and fadeOutTimerStarted ==false and theTimer~=0 then
+
+			if cutsceneTimerCount ~= 0 then
+
+				fadeOutTimerStarted = true
+				fadeOutTimerCount = 0
+				fadeOutTimerRing = Slide[currentSlide].cutsceneTimer.fadeOutTimer/2
+				fadeOutTimerRing = math.floor(fadeOutTimerRing)
+				theFadeOutColor = Slide[currentSlide].cutsceneTimer.fadeOutColor
+				fadeOutTransparency = 0
+				fadeOutRate = 255/fadeOutTimerRing
+				theNextChosenSlide = Slide[currentSlide].cutsceneTimer.nextSlide
+				cutsceneTimerCount=-1
+
+			else
+			fadeOutTimerStarted = true
+			fadeOutTimerCount = 0
+			fadeOutTimerRing = Slide[currentSlide].hotspot[clickedHotspot].fadeOutTimer/2
+			fadeOutTimerRing = math.floor(fadeOutTimerRing)
+			theFadeOutColor = Slide[currentSlide].hotspot[clickedHotspot].fadeOutColor
+			fadeOutTransparency = 0
+			fadeOutRate = 255/fadeOutTimerRing
+			theNextChosenSlide = Slide[currentSlide].hotspot[clickedHotspot].nextSlide
+			end
+
+		else
+
+			if fadeOutTimerStarted == true or gameStarted == true then
+
+				fadeInTimerStarted = true
+				fadeInTimerCount = 0
+				fadeInTransparency = 255
+				fadeInRate = 255/fadeInTimerRing
+			end
+			cutsceneTimerCount = 0
+			gameStarted=false
 		slowlyChangingToTheNextSlide = false --this is true in case some animations
 		--have to explode
 		clickedHotspot = 0
@@ -27,7 +181,7 @@ function starterpack ()
 		local folders = love.filesystem.getDirectoryItems("sprites")
 
 		for t = 1, #folders do
-			
+
 			local highestNumber = 0
 
 			for someImg = 1, #Slide[currentSlide].img, 1 do
@@ -37,7 +191,6 @@ function starterpack ()
 				local files = love.filesystem.getDirectoryItems("sprites/"..folders[t])
 
 					for i = 1, #files, 1 do
-
 
 						local thisNumber = files[i]:gsub(".png", "")
 
@@ -66,6 +219,7 @@ function starterpack ()
 					end
 				end
 			end
+			end
 		end
 	end
 
@@ -77,6 +231,9 @@ function starterpack ()
 						local source = love.audio.newSource( songName, 'stream' )
 						if Slide[currentSlide].music[currentMusic].clear == true then
 							love.audio.stop()
+						end
+						if Slide[currentSlide].music[currentMusic].repeating == true then
+							source:setLooping(true)
 						end
 						love.audio.play(source)
 					end
@@ -133,6 +290,18 @@ function starterpack ()
 		end
 
 		love.graphics.setColor(255,255,255,255)
+
+		if fadeOutTimerStarted == true then
+			love.graphics.setColor(theFadeOutColor[1],theFadeOutColor[2],theFadeOutColor[3],fadeOutTransparency)
+			love.graphics.rectangle('fill', 0, 0, screenResolution[1], screenResolution[2])
+			love.graphics.setColor(255,255,255,255)
+		end
+
+		if fadeInTimerStarted == true then
+			love.graphics.setColor(theFadeOutColor[1],theFadeOutColor[2],theFadeOutColor[3],fadeInTransparency)
+			love.graphics.rectangle('fill', 0, 0, screenResolution[1], screenResolution[2])
+			love.graphics.setColor(255,255,255,255)
+		end
 
 		love.graphics.setCanvas()
 	end

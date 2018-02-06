@@ -18,7 +18,6 @@ function drawStuff ()
 		love.graphics.setBlendMode('alpha', 'alphamultiply')
 
 		love.graphics.setBackgroundColor(backgroundColor)
-		--love.graphics.setColor(backgroundColor)
 
 		love.graphics.draw(awesomecanvas,xx,yy,0,sx,sy)
 

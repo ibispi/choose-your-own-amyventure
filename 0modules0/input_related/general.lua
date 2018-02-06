@@ -3,6 +3,7 @@ function general (dt)
 		love.event.quit()
 	end
 
+
 	if love.keyboard.isDown("f11") and keyf11pressed == false then
 		keyf11pressed = true
 		if fullscren==false then
@@ -26,14 +27,81 @@ function general (dt)
 		keyf11pressed = false
 	end
 
+	if Slide[currentSlide].cutsceneTimer.turnOnTimer == true and cutsceneTimerCount ~= -1 then
+		cutsceneTimerCount = cutsceneTimerCount + 1
+		if cutsceneTimerCount >= Slide[currentSlide].cutsceneTimer.frameCount then
+			newSlide(Slide[currentSlide].cutsceneTimer.nextSlide)
+			cutsceneTimerCount = -1
+		end
+	end
+
+	if fadeOutTimerStarted == true then
+		fadeOutTimerCount = fadeOutTimerCount + 1
+		fadeOutTransparency = fadeOutTransparency + fadeOutRate
+		if fadeOutTransparency <0 then fadeOutTransparency=0 end
+		if fadeOutTimerCount >= fadeOutTimerRing then
+			newSlide(theNextChosenSlide)
+			fadeOutTimerStarted=false
+		end
+	end
+
+	if fadeInTimerStarted == true then
+
+		fadeInTimerCount = fadeInTimerCount + 1
+		fadeInTransparency = fadeInTransparency - fadeInRate
+		if fadeInTransparency <0 then fadeInTransparency=0 end
+		if fadeInTimerCount >= fadeInTimerRing then
+			fadeInTimerStarted=false
+		end
+	end
 
 
-	if love.mouse.isDown(1)==true and leftmousePressed == false then
-		leftmousePressed = true
-		local clickedX, clickedY = love.mouse.getPosition()
 
-		clickedX = clickedX/sx-xx/sx
-		clickedY = clickedY/sy-yy/sy
+
+
+
+
+--------get the x and y coordinates of the cursor-------------------------------
+	clickedX, clickedY = love.mouse.getPosition()
+
+	clickedX = clickedX/sx-xx/sx
+	clickedY = clickedY/sy-yy/sy
+--------------------------------------------------------------------------------
+
+if love.mouse.isDown(1)==true then
+--if cursor clicks, play the clickety click animation
+if cursorAnimation.click.frames[1] ~= nil then
+	if cursorAnimation.nowAnimating ~= "click" then
+		cursorAnimation.nowAnimating = "click"
+		if cursorAnimation.delayTimerStarted == false then
+			cursorAnimation.delayTimerStarted = true
+			cursorAnimation.delayTimerCount = 0
+			cursorAnimation.currentFrame = 1
+		end
+	else
+		cursorAnimation.delayTimerCount = cursorAnimation.delayTimerCount + 1
+
+		local delay = defaultAnimationDelayForSprites
+		if cursorAnimationDelay.click[cursorAnimation.currentFrame] ~= nil then
+			delay = cursorAnimationDelay.click[cursorAnimation.currentFrame]
+		end
+
+		if cursorAnimation.delayTimerCount >= delay then
+			cursorAnimation.delayTimerCount = 0
+			if cursorAnimation.currentFrame < #cursorAnimation.click.frames then
+				cursorAnimation.currentFrame = cursorAnimation.currentFrame + 1
+			else
+				cursorAnimation.currentFrame = 1
+			end
+		end
+
+	end
+	love.mouse.setCursor(cursorAnimation.click.frames[cursorAnimation.currentFrame])
+end
+--------------------------
+end
+
+
 
 		for aHotspot = 1, #Slide[currentSlide].hotspot, 1 do
 
@@ -41,6 +109,9 @@ function general (dt)
 			clickedX <= Slide[currentSlide].hotspot[aHotspot].x2 and
 			clickedY >= Slide[currentSlide].hotspot[aHotspot].y1 and
 			clickedY <= Slide[currentSlide].hotspot[aHotspot].y2 then
+
+				if love.mouse.isDown(1)==true and leftmousePressed == false then
+					leftmousePressed = true
 
 				clickedHotspot = aHotspot
 				local noHotspot = true
@@ -65,14 +136,76 @@ function general (dt)
 					end
 
 				end
-
-
 				if noHotspot == true then
 					newSlide(Slide.hotspot[currentSlide][aHotspot].nextSlide)
 					clickedHotspot = 0
 				end
 				break
 
+			else--if not pressed but above a hotspot
+
+				if cursorAnimation.highlight.frames[1] ~= nil and love.mouse.isDown(1)==false then
+					if cursorAnimation.nowAnimating ~= "highlight" then
+						cursorAnimation.nowAnimating = "highlight"
+						if cursorAnimation.delayTimerStarted == false then
+							cursorAnimation.delayTimerStarted = true
+							cursorAnimation.delayTimerCount = 0
+							cursorAnimation.currentFrame = 1
+						end
+					else
+						cursorAnimation.delayTimerCount = cursorAnimation.delayTimerCount + 1
+
+						local delay = defaultAnimationDelayForSprites
+						if cursorAnimationDelay.highlight[cursorAnimation.currentFrame] ~= nil then
+							delay = cursorAnimationDelay.click[cursorAnimation.currentFrame]
+						end
+
+						if cursorAnimation.delayTimerCount >= delay then
+							cursorAnimation.delayTimerCount = 0
+
+							if cursorAnimation.currentFrame < #cursorAnimation.highlight.frames then
+								cursorAnimation.currentFrame = cursorAnimation.currentFrame + 1
+							else
+								cursorAnimation.currentFrame = 1
+							end
+						end
+
+					end
+					love.mouse.setCursor(cursorAnimation.highlight.frames[cursorAnimation.currentFrame])
+				end
+
+			end
+
+
+		else--if not over a hotspot
+
+			if cursorAnimation.normal.frames[1] ~= nil and love.mouse.isDown(1)==false then
+				if cursorAnimation.nowAnimating ~= "normal" then
+					cursorAnimation.nowAnimating = "normal"
+					if cursorAnimation.delayTimerStarted == false then
+						cursorAnimation.delayTimerStarted = true
+						cursorAnimation.delayTimerCount = 0
+						cursorAnimation.currentFrame = 1
+					end
+				else
+					cursorAnimation.delayTimerCount = cursorAnimation.delayTimerCount + 1
+
+					local delay = defaultAnimationDelayForSprites
+					if cursorAnimationDelay.normal[cursorAnimation.currentFrame] ~= nil then
+						delay = cursorAnimationDelay.normal[cursorAnimation.currentFrame]
+					end
+
+					if cursorAnimation.delayTimerCount >= delay then
+						cursorAnimation.delayTimerCount = 0
+						if cursorAnimation.currentFrame < #cursorAnimation.normal.frames then
+							cursorAnimation.currentFrame = cursorAnimation.currentFrame + 1
+						else
+							cursorAnimation.currentFrame = 1
+						end
+					end
+
+				end
+				love.mouse.setCursor(cursorAnimation.normal.frames[cursorAnimation.currentFrame])
 			end
 
 		end
@@ -95,7 +228,12 @@ function general (dt)
 					img[sumImg].delayTimerCount = img[sumImg].delayTimerCount +1
 				end
 
-				if img[sumImg].delayTimerCount >= Slide[currentSlide].img[sumImg].animationDelay then
+				local delay = defaultAnimationDelayForSprites
+				if Slide[currentSlide].img[sumImg].animationDelay[img[sumImg].currentFrame] ~= nil then
+					delay = Slide[currentSlide].img[sumImg].animationDelay[img[sumImg].currentFrame]
+				end
+
+				if img[sumImg].delayTimerCount >= delay then
 					img[sumImg].delayTimerCount = 0
 					img[sumImg].delayTimerStarted = false
 
@@ -155,8 +293,9 @@ function general (dt)
 							end
 							--if so then change to the next slide
 						else
-							if Slide[currentSlide].img.repeating == true then
+							if Slide[currentSlide].img[sumImg].repeating == true then
 								img[sumImg].currentFrame = 1
+								img[sumImg].animating = true
 							else
 								img[sumImg].animating = false
 								img[sumImg].currentFrame = 1
