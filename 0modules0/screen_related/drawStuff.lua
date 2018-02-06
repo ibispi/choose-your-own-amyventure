@@ -15,8 +15,10 @@ function drawStuff ()
 		yy = (1-(hh/h))/2*h
 		xx = (1-(ww/w))/2*w
 
-		love.graphics.setColor(backgroundColor)
 		love.graphics.setBlendMode('alpha', 'alphamultiply')
+
+		love.graphics.setBackgroundColor(backgroundColor)
+		--love.graphics.setColor(backgroundColor)
 
 		love.graphics.draw(awesomecanvas,xx,yy,0,sx,sy)
 

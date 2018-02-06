@@ -64,14 +64,9 @@ function starterpack ()
 					if Slide[currentSlide].img[someImg].static == false then
 						img[someImg].animating = true
 					end
-
 				end
-
 			end
-
-
 		end
-
 	end
 
 		if Slide[currentSlide] ~= nil then
@@ -106,12 +101,13 @@ function starterpack ()
 	end
 
 	function drawElements ()
+
 		love.graphics.setCanvas(awesomecanvas)
 		love.graphics.clear()
 
 		if Slide[currentSlide] ~= nil then
 			if Slide[currentSlide].img ~= nil then
-				if Slide[currentSlide].img[1] ~= nil then
+				if Slide[currentSlide].img[1] ~= nil and img[1]~=nil then
 					for currentImg = 1, #Slide[currentSlide].img, 1 do
 						local tempX = math.floor(Slide[currentSlide].img[currentImg].x)
 						local tempY = math.floor(Slide[currentSlide].img[currentImg].y)
