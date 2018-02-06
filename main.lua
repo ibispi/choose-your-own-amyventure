@@ -6,7 +6,7 @@ function love.load()
 	screenResolution = {800, 600}
 	textFont = love.graphics.newFont( "OpenDyslexic3-Regular.ttf", 18)
 	fullScreen = false
-	backgroundColor = {125,125,125,255}
+	backgroundColor = {0,0,0}
 	windowTitle = "A new Amy game"
 
 
@@ -163,9 +163,9 @@ Slide[1] = {
 	------------------------------------------------------------------------------
 		[1] = {
 
-			x = 0,
-			y = 0,
-			folder = "testBackground",
+			x = 300,
+			y = 400,
+			folder = "exampleAnimation",
 			static = true,
 			repeating = false,
 			explode = { 1 },
