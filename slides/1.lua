@@ -4,7 +4,7 @@ local _ = {---------------------------------------------------------------------
 	cutsceneTimer = {
 	------------------------------------------------------------------------------
 	------------------------------------------------------------------------------
-		turnOnTimer = true,
+		turnOnTimer = false,
     frameCount = 100,
     nextSlide = 2,
     fadeOutTimer = 0,
@@ -18,20 +18,27 @@ local _ = {---------------------------------------------------------------------
 		[1] = {
 
 			x1 = 0,
-			y1 = 0,
-			x2 = 800,
-			y2 = 300,
-			nextSlide = 2,
-      fadeOutTimer = 120,
-      fadeOutColor = {255,255,255},
-			onlyActivatesOnImgClick = 0,
-		},
-		[2] = {
-
-			x1 = 0,
 			y1 = 300,
 			x2 = 800,
 			y2 = 600,
+			nextSlide = 2,
+      fadeOutTimer = 120,
+      fadeOutColor = {255,255,255},
+			onlyActivatesOnImgClick = 1,
+			highlightImg = {
+				x = 300,
+				y = 400,
+				folder = "exampleAnimation",
+				animationDelay = {10, 10, 10, 100, 50, 10},
+			},
+		},
+
+		[2] = {
+
+			x1 = 0,
+			y1 = 0,
+			x2 = 800,
+			y2 = 300,
 			nextSlide = 2,
       fadeOutTimer = 120,
       fadeOutColor = {0,0,0},

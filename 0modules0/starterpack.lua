@@ -20,9 +20,11 @@ function starterpack ()
 
 	fadeOutTimerStarted = false
 	fadeOutTimerCount = 0
-
+	highlightAnimationTable = {}
 	love.window.setTitle(windowTitle)
 
+	highlightImgAnimation = {}
+	theresAHighlightAnimation = {x= 0, y=0, yes = false}
 
 	--loads cursor sprites
 	local folders = love.filesystem.getDirectoryItems("cursor")
@@ -177,6 +179,9 @@ function starterpack ()
 		--have to explode
 		clickedHotspot = 0
 		currentSlide = numero
+		highlightImgAnimation = {}
+		highlightAnimationTable ={}
+		theresAHighlightAnimation = {x= 0, y=0, yes = false}
 
 		img = {}
 
@@ -311,6 +316,16 @@ function starterpack ()
 						tempX, tempY,
 						Slide[currentSlide].text[currentText].width, 'center')
 					end
+				end
+			end
+		end
+
+		if highlightAnimationTable[1] ~= nil then
+			for highl =  1, #highlightAnimationTable, 1 do
+				if highlightImgAnimation[highlightAnimationTable[highl]].animationStarted == true then
+
+					love.graphics.draw(highlightImgAnimation[highlightAnimationTable[highl]].frames[highlightImgAnimation[highlightAnimationTable[highl]].currentFrame],
+				Slide[currentSlide].hotspot[highlightAnimationTable[highl]].highlightImg.x, Slide[currentSlide].hotspot[highlightAnimationTable[highl]].highlightImg.y)
 				end
 			end
 		end

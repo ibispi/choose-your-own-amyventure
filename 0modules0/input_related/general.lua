@@ -107,6 +107,8 @@ end
 
 				if love.mouse.isDown(1)==true and leftmousePressed == false then
 					leftmousePressed = true
+
+
 					local canContinue = false
 
 				if Slide[currentSlide].hotspot[aHotspot].onlyActivatesOnImgClick ~= 0 then
@@ -122,8 +124,7 @@ end
 					clickedY < Slide[currentSlide].img[imgNumber].y+imgHeight then
 						local locationX = clickedX-Slide[currentSlide].img[imgNumber].x
 						local locationY = clickedY-Slide[currentSlide].img[imgNumber].y
-						print("x "..locationX)
-						print("y "..locationY)
+
 						local imgData = love.image.newImageData("sprites/"..Slide[currentSlide].img[imgNumber].folder.."/"..frameNumber..".png")
 					local	r,g,b,a = imgData:getPixel( locationX, locationY)
 						if a == 255 then
@@ -136,6 +137,14 @@ end
 				end
 
 					if canContinue == true then
+
+						if highlightAnimationTable[1] ~= nil then
+							for highl = 1, #highlightAnimationTable, 1 do
+								highlightImgAnimation[highlightAnimationTable[highl]].animationStarted = false
+								highlightImgAnimation[highlightAnimationTable[highl]].delayTimerStarted = false
+							end
+							theresAHighlightAnimation.yes= false
+						end
 
 				clickedHotspot = aHotspot
 				local noHotspot = true
@@ -169,6 +178,144 @@ end
 
 			else--if not pressed but above a hotspot
 
+				local canContinue = false
+
+			if Slide[currentSlide].hotspot[aHotspot].onlyActivatesOnImgClick ~= 0 then
+
+				local imgNumber = Slide[currentSlide].hotspot[aHotspot].onlyActivatesOnImgClick
+				local frameNumber = img[imgNumber].currentFrame
+				local imgWidth = img[imgNumber].frames[frameNumber]:getWidth()
+				local imgHeight = img[imgNumber].frames[frameNumber]:getHeight()
+
+				if clickedX >= Slide[currentSlide].img[imgNumber].x and
+				clickedX < Slide[currentSlide].img[imgNumber].x+imgWidth and
+				clickedY >= Slide[currentSlide].img[imgNumber].y and
+				clickedY < Slide[currentSlide].img[imgNumber].y+imgHeight then
+					local locationX = clickedX-Slide[currentSlide].img[imgNumber].x
+					local locationY = clickedY-Slide[currentSlide].img[imgNumber].y
+
+					local imgData = love.image.newImageData("sprites/"..Slide[currentSlide].img[imgNumber].folder.."/"..frameNumber..".png")
+				local	r,g,b,a = imgData:getPixel( locationX, locationY)
+					if a == 255 then
+						canContinue = true
+					end
+
+				end
+			else
+				canContinue = true
+			end
+
+				if canContinue == true then
+
+
+
+
+				if Slide[currentSlide].hotspot[aHotspot].highlightImg ~= nil then
+					if Slide[currentSlide].hotspot[aHotspot].highlightImg.x ~= nil then
+						if highlightImgAnimation[aHotspot] == nil and slowlyChangingToTheNextSlide==false and fadeOutTimerStarted==false then
+
+							table.insert(highlightAnimationTable, aHotspot)
+							highlightImgAnimation[aHotspot] = {animationStarted = false,
+							currentFrame = 1, frames = {}, frameDelay = {},
+						delayTimerCount = 0, delayTimerStarted = false}
+							highlightImgAnimation[aHotspot].delayTimerCount = 0
+							highlightImgAnimation[aHotspot].currentFrame = 1
+							highlightImgAnimation[aHotspot].animationStarted = true
+							highlightImgAnimation[aHotspot].delayTimerStarted = true
+							theresAHighlightAnimation.yes= true
+							theresAHighlightAnimation.x= clickedX
+							theresAHighlightAnimation.y= clickedY
+
+							local files = love.filesystem.getDirectoryItems("sprites/"..Slide[currentSlide].hotspot[aHotspot].highlightImg.folder)
+
+							local highestNumber = 0
+
+							for i = 1, #files, 1 do
+
+								local thisNumber = files[i]:gsub(".png", "")
+
+								--it shouldn't check if it is a directory but if it is a png file
+								if thisNumber ~= nil then
+
+									thisNumber = tonumber(thisNumber)
+
+									if thisNumber > highestNumber then
+										highestNumber = thisNumber
+									end
+
+								end
+							end
+
+							if highestNumber ~= 0 then
+
+								for anImg = 1, highestNumber, 1 do
+
+									highlightImgAnimation[aHotspot].frames[anImg] =
+									love.graphics.newImage("sprites/"..
+									Slide[currentSlide].hotspot[aHotspot].highlightImg.folder.."/"..anImg..".png")
+
+									if Slide[currentSlide].hotspot[aHotspot].highlightImg.animationDelay[anImg]== nil then
+										highlightImgAnimation[aHotspot].frameDelay[anImg] =
+										defaultAnimationDelayForSprites
+									else
+										highlightImgAnimation[aHotspot].frameDelay[anImg] =
+										Slide[currentSlide].hotspot[aHotspot].highlightImg.animationDelay[anImg]
+									end
+
+								end
+							end
+
+
+
+						end
+
+						if highlightImgAnimation[aHotspot].animationStarted == false and slowlyChangingToTheNextSlide==false and fadeOutTimerStarted==false then
+
+							highlightImgAnimation[aHotspot].delayTimerCount = 0
+							highlightImgAnimation[aHotspot].currentFrame = 1
+							highlightImgAnimation[aHotspot].animationStarted = true
+							highlightImgAnimation[aHotspot].delayTimerStarted = true
+							theresAHighlightAnimation.yes= true
+							theresAHighlightAnimation.x= clickedX
+							theresAHighlightAnimation.y= clickedY
+						end
+
+						highlightImgAnimation[aHotspot].delayTimerCount =
+						highlightImgAnimation[aHotspot].delayTimerCount+1
+
+						if highlightImgAnimation[aHotspot].delayTimerCount >=
+						highlightImgAnimation[aHotspot].frameDelay[highlightImgAnimation[aHotspot].currentFrame] then
+							if highlightImgAnimation[aHotspot].currentFrame == #highlightImgAnimation[aHotspot].frames then
+								highlightImgAnimation[aHotspot].currentFrame = 1
+							else
+								highlightImgAnimation[aHotspot].currentFrame = highlightImgAnimation[aHotspot].currentFrame +1
+							end
+							highlightImgAnimation[aHotspot].delayTimerCount=0
+						end
+						theresAHighlightAnimation.x= clickedX
+						theresAHighlightAnimation.y= clickedY
+
+					end
+				else
+
+						if theresAHighlightAnimation.yes == true then
+
+							if theresAHighlightAnimation.x ~= clickedX or
+							theresAHighlightAnimation.y ~= clickedY then
+								if highlightAnimationTable[1] ~= nil then
+									for highl = 1, #highlightAnimationTable, 1 do
+										highlightImgAnimation[highlightAnimationTable[highl]].animationStarted = false
+										highlightImgAnimation[highlightAnimationTable[highl]].delayTimerStarted = false
+									end
+									theresAHighlightAnimation.yes= false
+								end
+							end
+
+						end
+
+
+				end
+
 				if cursorAnimation.highlight.frames[1] ~= nil and love.mouse.isDown(1)==false then
 					if cursorAnimation.nowAnimating ~= "highlight" then
 						cursorAnimation.nowAnimating = "highlight"
@@ -200,8 +347,25 @@ end
 				end
 			end
 
+		end
+
 
 		else--if not over a hotspot
+
+			if theresAHighlightAnimation.yes == true then
+
+				if theresAHighlightAnimation.x ~= clickedX or
+				theresAHighlightAnimation.y ~= clickedY then
+					if highlightAnimationTable[1] ~= nil then
+						for highl = 1, #highlightAnimationTable, 1 do
+							highlightImgAnimation[highlightAnimationTable[highl]].animationStarted = false
+							highlightImgAnimation[highlightAnimationTable[highl]].delayTimerStarted = false
+						end
+						theresAHighlightAnimation.yes= false
+					end
+				end
+
+			end
 
 			if cursorAnimation.normal.frames[1] ~= nil and love.mouse.isDown(1)==false then
 				if cursorAnimation.nowAnimating ~= "normal" then
