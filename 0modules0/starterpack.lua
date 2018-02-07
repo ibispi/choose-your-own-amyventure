@@ -162,7 +162,7 @@ function starterpack ()
 
 		else
 
-			if fadeOutTimerStarted == true or gameStarted == true then
+			if (fadeOutTimerRing ~= 0 and fadeOutTimerStarted == true) or gameStarted == true then
 
 				fadeInTimerStarted = true
 				fadeInTimerCount = 0
