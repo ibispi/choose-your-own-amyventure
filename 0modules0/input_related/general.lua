@@ -161,7 +161,7 @@ end
 
 				end
 				if noHotspot == true then
-					newSlide(Slide.hotspot[currentSlide][aHotspot].nextSlide)
+					newSlide(Slide[currentSlide].hotspot[aHotspot].nextSlide)
 					clickedHotspot = 0
 				end
 				break
