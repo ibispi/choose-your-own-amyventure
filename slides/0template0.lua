@@ -83,6 +83,7 @@ local _ = {---------------------------------------------------------------------
 			name = "exampleTrack",
 			repeating = true,
 			clear = true,
+			startFirstTimeOnly = true,
 
 		},
 

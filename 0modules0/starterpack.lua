@@ -7,6 +7,8 @@ function starterpack ()
 	text = {}
 	source = nil
 
+	trackIsAlreadyPlaying = {}
+
 	fadeOutTransparency = 0
 
 	love.graphics.setFont(textFont)
@@ -221,25 +223,51 @@ function starterpack ()
 			end
 			end
 		end
-	end
 
 		if Slide[currentSlide] ~= nil then
 			if Slide[currentSlide].music ~= nil then
 				if Slide[currentSlide].music[1] ~= nil then
-					for currentMusic = 1, #Slide[currentSlide].music, 1 do
-						local songName = "music/"..Slide[currentSlide].music[currentMusic].name..".ogg"
-						local source = love.audio.newSource( songName, 'stream' )
-						if Slide[currentSlide].music[currentMusic].clear == true then
-							love.audio.stop()
+
+
+
+							for currentMusic = 1, #Slide[currentSlide].music, 1 do
+
+								local canPlayMusiq = true
+
+								if trackIsAlreadyPlaying[currentSlide]==nil then
+									trackIsAlreadyPlaying[currentSlide] = {}
+								end
+
+								if Slide[currentSlide].music[currentMusic].startFirstTimeOnly == true then
+									if trackIsAlreadyPlaying[currentSlide][currentMusic] == nil then
+										trackIsAlreadyPlaying[currentSlide][currentMusic] = true
+									else
+										canPlayMusiq = false
+									end
+
+								end
+
+								if canPlayMusiq == true then
+
+									local songName = "music/"..Slide[currentSlide].music[currentMusic].name..".ogg"
+									local source = love.audio.newSource( songName, 'stream' )
+									if Slide[currentSlide].music[currentMusic].clear == true then
+										print("currentSl "..currentSlide)
+										print(Slide[currentSlide].music[currentMusic].name)
+										love.audio.stop()
+									end
+									if Slide[currentSlide].music[currentMusic].repeating == true then
+										source:setLooping(true)
+									end
+									love.audio.play(source)
+								end
+
+							end
 						end
-						if Slide[currentSlide].music[currentMusic].repeating == true then
-							source:setLooping(true)
-						end
-						love.audio.play(source)
+
 					end
 				end
-			end
-		end
+
 
 		sfx = {}
 
@@ -254,7 +282,7 @@ function starterpack ()
 				end
 			end
 		end
-
+		end
 	end
 
 	function drawElements ()
