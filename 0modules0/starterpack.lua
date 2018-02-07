@@ -252,8 +252,6 @@ function starterpack ()
 									local songName = "music/"..Slide[currentSlide].music[currentMusic].name..".ogg"
 									local source = love.audio.newSource( songName, 'stream' )
 									if Slide[currentSlide].music[currentMusic].clear == true then
-										print("currentSl "..currentSlide)
-										print(Slide[currentSlide].music[currentMusic].name)
 										love.audio.stop()
 									end
 									if Slide[currentSlide].music[currentMusic].repeating == true then
