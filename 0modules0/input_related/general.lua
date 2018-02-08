@@ -162,7 +162,7 @@ end
 			end
 
 
-				if love.mouse.isDown(1)==true and leftmousePressed == false then
+				if love.mouse.isDown(1)==true and leftmousePressed == false and slowlyChangingToTheNextSlide==false and fadeOutTimerStarted==false then
 
 					if canContinue == true then
 
@@ -198,6 +198,7 @@ end
 				if noHotspot == true then
 					newSlide(Slide[currentSlide].hotspot[aHotspot].nextSlide)
 					clickedHotspot = 0
+					break
 				end
 				break
 				end
@@ -214,7 +215,7 @@ end
 
 							if highlightImgAnimation[aHotspot] == nil then highlightImgAnimation[aHotspot] = {} end
 
-							if highlightImgAnimation[aHotspot][highlightNum] == nil and slowlyChangingToTheNextSlide==false and fadeOutTimerStarted==false then
+							if highlightImgAnimation[aHotspot][highlightNum] == nil then
 
 								local canAddAHotspot = true
 								if highlightAnimationTable[1]== nil then
@@ -298,7 +299,9 @@ end
 								end
 							end
 
-						if highlightImgAnimation[aHotspot][highlightNum].animationStarted == false and slowlyChangingToTheNextSlide==false and fadeOutTimerStarted==false then
+					--		if slowlyChangingToTheNextSlide==false and fadeOutTimerStarted==false then
+
+						if highlightImgAnimation[aHotspot][highlightNum].animationStarted == false then
 
 							highlightImgAnimation[aHotspot][highlightNum].delayTimerCount = 0
 							highlightImgAnimation[aHotspot][highlightNum].currentFrame = 1
@@ -308,7 +311,7 @@ end
 							theresAHighlightAnimation.x= clickedX
 							theresAHighlightAnimation.y= clickedY
 						end
-
+					--end
 						highlightImgAnimation[aHotspot][highlightNum].delayTimerCount =
 						highlightImgAnimation[aHotspot][highlightNum].delayTimerCount+1
 
@@ -385,7 +388,7 @@ end
 
 			if overAHotspot==false then
 
-				if theresAHighlightAnimation.yes == true then
+				if theresAHighlightAnimation.yes == true  then
 
 					if theresAHighlightAnimation.x ~= clickedX or
 					theresAHighlightAnimation.y ~= clickedY then
