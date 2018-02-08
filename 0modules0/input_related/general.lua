@@ -163,10 +163,13 @@ end
 
 
 				if love.mouse.isDown(1)==true and leftmousePressed == false then
+
+					if canContinue == true then
+
 					leftmousePressed = true
 
 
-					if canContinue == true then
+
 
 
 				clickedHotspot = aHotspot
