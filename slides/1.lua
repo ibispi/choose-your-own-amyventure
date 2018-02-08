@@ -26,10 +26,18 @@ local _ = {---------------------------------------------------------------------
       fadeOutColor = {255,255,255},
 			onlyActivatesOnImgClick = 1,
 			highlightImg = {
-				x = 300,
-				y = 400,
-				folder = "exampleAnimation",
-				animationDelay = {10, 10, 10, 100, 50, 10},
+				[1] = {
+					x = 300,
+					y = 400,
+					folder = "exampleAnimation",
+					animationDelay = {10, 10, 10, 100, 50, 10},
+				},
+				[2] = {
+					x = 600,
+					y = 400,
+					folder = "exampleAnimation",
+					animationDelay = {10, 10, 10, 100, 50, 10},
+				},
 			},
 		},
 

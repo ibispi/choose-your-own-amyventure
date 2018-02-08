@@ -13,6 +13,8 @@ function starterpack ()
 
 	love.graphics.setFont(textFont)
 
+	hoverOverData = {number = 0, data = 0}
+
 	currentSlide = 1
 	slowlyChangingToTheNextSlide = false --this is true in case some animations
 	--have to explode
@@ -112,7 +114,7 @@ function starterpack ()
 			end
 		end
 
-		newSlide(1)
+		newSlide(startingSlide)
 	end
 
 	cutsceneTimerCount = -1
@@ -173,8 +175,8 @@ function starterpack ()
 				fadeInTransparency = 255
 				fadeInRate = 255/fadeInTimerRing
 			end
-			cutsceneTimerCount = 0
-			gameStarted=false
+		cutsceneTimerCount = 0
+		gameStarted=false
 		slowlyChangingToTheNextSlide = false --this is true in case some animations
 		--have to explode
 		clickedHotspot = 0
@@ -182,6 +184,7 @@ function starterpack ()
 		highlightImgAnimation = {}
 		highlightAnimationTable ={}
 		theresAHighlightAnimation = {x= 0, y=0, yes = false}
+		hoverOverData = {number = 0, data = 0, frame = 0}
 
 		img = {}
 
@@ -320,12 +323,15 @@ function starterpack ()
 			end
 		end
 
-		if highlightAnimationTable[1] ~= nil then
+		if highlightAnimationTable[1] ~= nil and theresAHighlightAnimation.yes == true then
 			for highl =  1, #highlightAnimationTable, 1 do
-				if highlightImgAnimation[highlightAnimationTable[highl]].animationStarted == true then
+				for highltwo = 1, #highlightImgAnimation[highlightAnimationTable[highl]], 1 do
 
-					love.graphics.draw(highlightImgAnimation[highlightAnimationTable[highl]].frames[highlightImgAnimation[highlightAnimationTable[highl]].currentFrame],
-				Slide[currentSlide].hotspot[highlightAnimationTable[highl]].highlightImg.x, Slide[currentSlide].hotspot[highlightAnimationTable[highl]].highlightImg.y)
+					if highlightImgAnimation[highlightAnimationTable[highl]][highltwo].animationStarted == true then
+
+						love.graphics.draw(highlightImgAnimation[highlightAnimationTable[highl]][highltwo].frames[highlightImgAnimation[highlightAnimationTable[highl]][highltwo].currentFrame],
+					Slide[currentSlide].hotspot[highlightAnimationTable[highl]].highlightImg[highltwo].x, Slide[currentSlide].hotspot[highlightAnimationTable[highl]].highlightImg[highltwo].y)
+					end
 				end
 			end
 		end

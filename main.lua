@@ -30,6 +30,8 @@ function love.load()
 	startingFadeInTime = 100
 	startingFadeInColor = {0,0,0}
 
+	startingSlide = 1
+
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 local starterPack = require "0modules0.starterpack" starterPack()
