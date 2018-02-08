@@ -219,6 +219,23 @@ end
 									table.insert(highlightAnimationTable, aHotspot)
 								end
 
+								if theresAHighlightAnimation.yes == true then
+
+									if theresAHighlightAnimation.x ~= clickedX or
+									theresAHighlightAnimation.y ~= clickedY then
+										if highlightAnimationTable[1] ~= nil then
+											for highl = 1, #highlightAnimationTable, 1 do
+												if highlightAnimationTable[highl]~=aHotspot then
+													for highltwo = 1, #highlightImgAnimation[highlightAnimationTable[highl]], 1 do
+														highlightImgAnimation[highlightAnimationTable[highl]][highltwo].animationStarted = false
+														highlightImgAnimation[highlightAnimationTable[highl]][highltwo].delayTimerStarted = false
+													end
+												end
+											end
+										end
+									end
+								end
+
 								highlightImgAnimation[aHotspot][highlightNum] = {animationStarted = false,
 								currentFrame = 1, frames = {}, frameDelay = {},
 								delayTimerCount = 0, delayTimerStarted = false}
