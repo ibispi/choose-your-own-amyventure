@@ -327,7 +327,8 @@ function starterpack ()
 			for highl =  1, #highlightAnimationTable, 1 do
 				for highltwo = 1, #highlightImgAnimation[highlightAnimationTable[highl]], 1 do
 
-					if highlightImgAnimation[highlightAnimationTable[highl]][highltwo].animationStarted == true then
+					if highlightImgAnimation[highlightAnimationTable[highl]][highltwo].animationStarted == true and
+					slowlyChangingToTheNextSlide==false and fadeOutTimerStarted==false then
 
 						love.graphics.draw(highlightImgAnimation[highlightAnimationTable[highl]][highltwo].frames[highlightImgAnimation[highlightAnimationTable[highl]][highltwo].currentFrame],
 					Slide[currentSlide].hotspot[highlightAnimationTable[highl]].highlightImg[highltwo].x, Slide[currentSlide].hotspot[highlightAnimationTable[highl]].highlightImg[highltwo].y)
