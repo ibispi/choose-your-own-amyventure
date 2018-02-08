@@ -100,14 +100,20 @@ end
 	local overAHotspot = false
 		for aHotspot = 1, #Slide[currentSlide].hotspot, 1 do
 
+			local canContinue = false
+
 			if clickedX >= Slide[currentSlide].hotspot[aHotspot].x1 and
 			clickedX <= Slide[currentSlide].hotspot[aHotspot].x2 and
 			clickedY >= Slide[currentSlide].hotspot[aHotspot].y1 and
 			clickedY <= Slide[currentSlide].hotspot[aHotspot].y2 then
 
-				local canContinue = false
 
-			if Slide[currentSlide].hotspot[aHotspot].onlyActivatesOnImgClick ~= 0 then
+
+			if Slide[currentSlide].hotspot[aHotspot].onlyActivatesOnImgClick == 0 then
+				canContinue = true
+				overAHotspot=true
+			else
+
 
 				local imgNumber = Slide[currentSlide].hotspot[aHotspot].onlyActivatesOnImgClick
 				local frameNumber = img[imgNumber].currentFrame
@@ -133,22 +139,11 @@ end
 					if a == 255 then
 						canContinue = true
 						overAHotspot=true
-					end
+					else
 
-				end
-			else
-				canContinue = true
-				overAHotspot=true
-			end
-
-
-				if love.mouse.isDown(1)==true and leftmousePressed == false then
-					leftmousePressed = true
-
-
-					if canContinue == true then
-
-
+						if theresAHighlightAnimation.yes == true then
+							if theresAHighlightAnimation.x ~= clickedX or
+							theresAHighlightAnimation.y ~= clickedY then
 								if highlightAnimationTable[1] ~= nil then
 									for highl = 1, #highlightAnimationTable, 1 do
 										for highltwo = 1, #highlightImgAnimation[highlightAnimationTable[highl]], 1 do
@@ -158,6 +153,20 @@ end
 									end
 									theresAHighlightAnimation.yes= false
 								end
+							end
+						end
+
+
+					end
+				end
+			end
+
+
+				if love.mouse.isDown(1)==true and leftmousePressed == false then
+					leftmousePressed = true
+
+
+					if canContinue == true then
 
 
 				clickedHotspot = aHotspot
@@ -199,6 +208,7 @@ end
 					if Slide[currentSlide].hotspot[aHotspot].highlightImg[1] ~= nil then
 
 						for highlightNum = 1, #Slide[currentSlide].hotspot[aHotspot].highlightImg, 1 do
+
 							if highlightImgAnimation[aHotspot] == nil then highlightImgAnimation[aHotspot] = {} end
 
 							if highlightImgAnimation[aHotspot][highlightNum] == nil and slowlyChangingToTheNextSlide==false and fadeOutTimerStarted==false then
@@ -219,22 +229,20 @@ end
 									table.insert(highlightAnimationTable, aHotspot)
 								end
 
-								if theresAHighlightAnimation.yes == true then
-
-									if theresAHighlightAnimation.x ~= clickedX or
-									theresAHighlightAnimation.y ~= clickedY then
-										if highlightAnimationTable[1] ~= nil then
-											for highl = 1, #highlightAnimationTable, 1 do
-												if highlightAnimationTable[highl]~=aHotspot then
-													for highltwo = 1, #highlightImgAnimation[highlightAnimationTable[highl]], 1 do
-														highlightImgAnimation[highlightAnimationTable[highl]][highltwo].animationStarted = false
-														highlightImgAnimation[highlightAnimationTable[highl]][highltwo].delayTimerStarted = false
-													end
-												end
+							if theresAHighlightAnimation.yes == true then
+								if theresAHighlightAnimation.x ~= clickedX or
+								theresAHighlightAnimation.y ~= clickedY then
+									if highlightAnimationTable[1] ~= nil then
+										for highl = 1, #highlightAnimationTable, 1 do
+											for highltwo = 1, #highlightImgAnimation[highlightAnimationTable[highl]], 1 do
+												highlightImgAnimation[highlightAnimationTable[highl]][highltwo].animationStarted = false
+												highlightImgAnimation[highlightAnimationTable[highl]][highltwo].delayTimerStarted = false
 											end
 										end
+										theresAHighlightAnimation.yes= false
 									end
 								end
+							end
 
 								highlightImgAnimation[aHotspot][highlightNum] = {animationStarted = false,
 								currentFrame = 1, frames = {}, frameDelay = {},
@@ -313,7 +321,6 @@ end
 						theresAHighlightAnimation.x= clickedX
 						theresAHighlightAnimation.y= clickedY
 					end
-
 
 				else
 
