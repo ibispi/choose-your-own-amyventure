@@ -300,9 +300,25 @@ function starterpack ()
 			if Slide[currentSlide].img ~= nil then
 				if Slide[currentSlide].img[1] ~= nil and img[1]~=nil then
 					for currentImg = 1, #Slide[currentSlide].img, 1 do
-						local tempX = math.floor(Slide[currentSlide].img[currentImg].x)
-						local tempY = math.floor(Slide[currentSlide].img[currentImg].y)
-						love.graphics.draw (img[currentImg].frames[img[currentImg].currentFrame], tempX, tempY)
+
+						local canPass = true
+
+						if imgToNotBeDrawn ~= nil then
+							if imgToNotBeDrawn[1] ~= nil then
+								for theImgs = 1, #imgToNotBeDrawn, 1 do
+									if imgToNotBeDrawn[theImgs] == currentImg then
+										canPass = false
+										break
+									end
+								end
+							end
+						end
+
+						if canPass == true then
+							local tempX = math.floor(Slide[currentSlide].img[currentImg].x)
+							local tempY = math.floor(Slide[currentSlide].img[currentImg].y)
+							love.graphics.draw (img[currentImg].frames[img[currentImg].currentFrame], tempX, tempY)
+						end
 					end
 				end
 			end

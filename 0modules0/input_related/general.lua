@@ -3,7 +3,7 @@ function general (dt)
 		love.event.quit()
 	end
 
-
+imgToNotBeDrawn = {}
 	if love.keyboard.isDown("f11") and keyf11pressed == false then
 		keyf11pressed = true
 		if fullscren==false then
@@ -314,6 +314,17 @@ end
 					--end
 						highlightImgAnimation[aHotspot][highlightNum].delayTimerCount =
 						highlightImgAnimation[aHotspot][highlightNum].delayTimerCount+1
+
+						--BACKHERE
+
+						if Slide[currentSlide].hotspot[aHotspot].disableImgOnHighlight ~= nil then
+							if Slide[currentSlide].hotspot[aHotspot].disableImgOnHighlight[1] ~= nil then
+								imgToNotBeDrawn = {}
+								for someImg = 1, #Slide[currentSlide].hotspot[aHotspot].disableImgOnHighlight, 1 do
+									table.insert(imgToNotBeDrawn, Slide[currentSlide].hotspot[aHotspot].disableImgOnHighlight[someImg])
+								end
+							end
+						end
 
 						if highlightImgAnimation[aHotspot][highlightNum].delayTimerCount >=
 						highlightImgAnimation[aHotspot][highlightNum].frameDelay[highlightImgAnimation[aHotspot][highlightNum].currentFrame] then
