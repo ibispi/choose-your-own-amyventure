@@ -296,6 +296,8 @@ function starterpack ()
 		love.graphics.setCanvas(awesomecanvas)
 		love.graphics.clear()
 
+		love.graphics.setColor(255,255,255,255)
+
 		if Slide[currentSlide] ~= nil then
 			if Slide[currentSlide].img ~= nil then
 				if Slide[currentSlide].img[1] ~= nil and img[1]~=nil then
@@ -334,6 +336,7 @@ function starterpack ()
 						love.graphics.printf(Slide[currentSlide].text[currentText].print,
 						tempX, tempY,
 						Slide[currentSlide].text[currentText].width, 'center')
+						love.graphics.setColor(255,255,255,255)
 					end
 				end
 			end
